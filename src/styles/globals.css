@@ -25,3 +25,12 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+input{
+  color:black;
+  border-radius: 10px;
+}
+
+input::placeholder{
+  color: gray;
+}

@@ -7,7 +7,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const ConfirmationButton: FC<ButtonProps> = ({buttonText, ...props}) => {
 
     return(
-        <button className="bg-green-800 w-64 rounded" {...props}>
+        <button className="bg-green-800 h-8 w-64 rounded" {...props}>
             {buttonText}
         </button>
     )
