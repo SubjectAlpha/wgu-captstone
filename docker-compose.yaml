@@ -10,8 +10,8 @@ services:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_USER: youruser
-      MYSQL_PASSWORD: yourpassword
+      MYSQL_USER: exampleUser
+      MYSQL_PASSWORD: ExamplePassword1
   # opencrm:
   #   image: open-crm
   #   ports:
