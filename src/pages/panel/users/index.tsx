@@ -2,13 +2,16 @@ import { DialogPopup } from "@/opencrm/components/DialogPopup";
 import PanelPage from "@/opencrm/components/panel/Page";
 import Table from "@/opencrm/components/table";
 import { get, post } from "@/opencrm/utility/fetch";
+import { Hash } from "@/opencrm/utility/pwd";
 import {
 	EmailRegex,
 	PasswordComplexityMessage,
 	PasswordRegex,
 } from "@/opencrm/utility/regex";
 import { Typography, Input, Select, Option } from "@material-tailwind/react";
+import { Permissions } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { randomBytes } from "crypto";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
@@ -36,7 +39,8 @@ const Index = () => {
 	const permissionsQuery = useQuery({
 		queryKey: ["findAllPermissions"],
 		queryFn: async () => {
-			let result = await get("/api/permissions");
+			let result = await get("/api/permissions/all");
+			return result.permission;
 		},
 	});
 
@@ -51,9 +55,12 @@ const Index = () => {
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
 			email: string;
-			password: string;
-			confirmPassword: string;
+			password?: string;
+			confirmPassword?: string;
 		}) => {
+			if (!body.password || !body.confirmPassword) {
+				const password = Hash(randomBytes(24).toString("hex"));
+			}
 			return post("/api/users", body);
 		},
 		onSuccess: (data) => {
@@ -130,30 +137,24 @@ const Index = () => {
 	}
 
 	async function registerClick() {
-		if (email && password && confirmPassword) {
+		if (email) {
 			setErrorMessage("");
 			if (!EmailRegex.test(email)) {
 				setErrorMessage("Invalid email address");
 				return;
 			}
-			if (!PasswordRegex.test(password)) {
-				setErrorMessage(PasswordComplexityMessage);
-				return;
-			}
-			if (password === confirmPassword) {
-				const result = await registrationMutation.mutateAsync({
-					email,
-					password,
-					confirmPassword,
-				});
-				if (result) {
-					setSuccessMessage(
-						"User account creation successful, you may now log in."
-					);
-				}
-			} else {
-				setErrorMessage("Passwords do not match");
-				return;
+
+			const randomPassword = Hash(randomBytes(24).toString("hex"));
+
+			const result = await registrationMutation.mutateAsync({
+				email,
+				password: randomPassword,
+				confirmPassword: randomPassword,
+			});
+			if (result) {
+				setSuccessMessage(
+					"User account creation successful, you may now log in."
+				);
 			}
 		} else {
 			const emailError =
@@ -163,6 +164,8 @@ const Index = () => {
 			setErrorMessage(email == "" ? emailError : passwordError);
 		}
 	}
+
+	console.log(permissionsQuery.data);
 
 	if (usersQuery.data) {
 		return (
@@ -240,7 +243,20 @@ const Index = () => {
 							Permission Level
 						</Typography>
 						<Select placeholder={undefined}>
-							<Option value="-1">Permission</Option>
+							{permissionsQuery.data ? (
+								permissionsQuery.data.map((p: Permissions) => {
+									return (
+										<Option
+											key={p.powerLevel}
+											value={p.powerLevel + ""}
+										>
+											{p.name}
+										</Option>
+									);
+								})
+							) : (
+								<Option value="-1">Permission</Option>
+							)}
 						</Select>
 					</div>
 					{errorMessage.length > 0 ? (
