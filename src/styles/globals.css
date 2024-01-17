@@ -34,3 +34,8 @@ input{
 input::placeholder{
   color: gray;
 }
+
+.container {
+  max-width: 95%;
+}
+

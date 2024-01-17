@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
+import withMT from "@material-tailwind/react/utils/withMT"
 
-const config: Config = {
+const config = withMT({
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -13,8 +14,12 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      gridTemplateColumns: {
+        sidebar: "300px auto", //for sidebar layout
+        "sidebar-collapsed": "64px auto", //for collapsed sidebar layout
+      },
     },
   },
   plugins: [],
-}
+})
 export default config

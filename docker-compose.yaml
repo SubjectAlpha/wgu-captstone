@@ -1,8 +1,12 @@
 # Use root/example as user/password credentials
+# Although the mysql_native_password authentication method has known vulnerabilities (https://csrc.nist.gov/Projects/Hash-Functions/NIST-Policy-on-Hash-Functions),
+##  prisma client does not currently work with the sha256_password or caching_sha256_password currently.
+##  https://github.com/prisma/prisma/issues/9454 https://github.com/prisma/prisma/discussions/14181 https://github.com/prisma/prisma/discussions/14181#discussioncomment-3186342
 version: '3.1'
 services:
   db:
     image: mysql
+    command: --default-authentication-plugin=mysql_native_password
     ports:
     - "3306:3306"
     restart: always
@@ -10,8 +14,6 @@ services:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_USER: exampleUser
-      MYSQL_PASSWORD: ExamplePassword1
   # opencrm:
   #   image: open-crm
   #   ports:
