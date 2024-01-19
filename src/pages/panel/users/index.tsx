@@ -17,10 +17,10 @@ import { useRouter } from "next/router";
 import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 
 const Index = () => {
-	const [selectedUser, setSelectedUser] = useState(null);
+	const [id, setId] = useState("");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
-	const [permission, setPermission] = useState("");
+	const [permission, setPermission] = useState("0");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
@@ -54,18 +54,23 @@ const Index = () => {
 
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
+			id: string;
 			email: string;
+            permission?: string;
 			password?: string;
 			confirmPassword?: string;
 		}) => {
-			if (!body.password || !body.confirmPassword) {
-				const password = Hash(randomBytes(24).toString("hex"));
+			if (!body.id) {
+                const password = (randomBytes(24).toString("hex")) + "!@";
+                body.password = password;
+                body.confirmPassword = password;
 			}
+            console.log(body);
 			return post("/api/users", body);
 		},
 		onSuccess: (data) => {
 			if (data) {
-				setEmail("");
+				resetFields();
 				setSuccessMessage(
 					"User created successfully, they may now login."
 				);
@@ -76,46 +81,28 @@ const Index = () => {
 		},
 	});
 
-	const updateMutation = useMutation({
-		mutationFn: (body: {
-			uuid: string;
-			email: string;
-			permission: string;
-		}) => {
-			return post("/api/users/" + body.uuid, body);
-		},
-		onSuccess: (data) => {
-			if (data) {
-				resetFields();
-				setSuccessMessage("User updated successfully");
-			}
-		},
-		onError: (error) => {
-			setErrorMessage(error.message);
-		},
-	});
-
 	const getUserMutation = useMutation({
+		mutationKey: ["getUserMutation"],
 		mutationFn: (uuid: string) => {
 			return get("/api/users/" + uuid);
 		},
 		onSuccess(data, variables, context) {
 			if (data.user) {
-				console.log(data.user);
+				setId(data.user.id);
 				setName(data.user.name);
 				setEmail(data.user.email);
-				//setPermission()
+				setPermission(data.user.permission.toString());
 			}
 		},
 	});
 
 	function resetFields() {
+		setId("");
 		setName("");
 		setEmail("");
 		setErrorMessage("");
 		setSuccessMessage("");
-		setSelectedUser(null);
-		//setPermission()
+		setPermission("0");
 	}
 
 	function onAddClick(event: MouseEventHandler) {
@@ -136,6 +123,10 @@ const Index = () => {
 		setEmail(event.target.value);
 	}
 
+	function onPermissionChange(value: string | undefined) {
+		setPermission(value ?? "0");
+	}
+
 	async function registerClick() {
 		if (email) {
 			setErrorMessage("");
@@ -144,28 +135,22 @@ const Index = () => {
 				return;
 			}
 
-			const randomPassword = Hash(randomBytes(24).toString("hex"));
-
 			const result = await registrationMutation.mutateAsync({
+				id,
 				email,
-				password: randomPassword,
-				confirmPassword: randomPassword,
+                permission
 			});
+
 			if (result) {
-				setSuccessMessage(
-					"User account creation successful, you may now log in."
-				);
+				setSuccessMessage("User account creation successful.");
 			}
 		} else {
 			const emailError =
 				"The email address field cannot be blank, and have a valid email address.";
-			const passwordError = "The password fields cannot be blank.";
 
-			setErrorMessage(email == "" ? emailError : passwordError);
+			setErrorMessage(emailError);
 		}
 	}
-
-	console.log(permissionsQuery.data);
 
 	if (usersQuery.data) {
 		return (
@@ -242,7 +227,11 @@ const Index = () => {
 						>
 							Permission Level
 						</Typography>
-						<Select placeholder={undefined}>
+						<Select
+							placeholder={undefined}
+							onChange={onPermissionChange}
+							value={permission}
+						>
 							{permissionsQuery.data ? (
 								permissionsQuery.data.map((p: Permissions) => {
 									return (

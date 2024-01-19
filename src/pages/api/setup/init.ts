@@ -36,7 +36,7 @@ export default async function handler(
 							},
 							{
 								name: "user",
-								powerLevel: 0,
+								powerLevel: 1,
 							},
 						],
 					});

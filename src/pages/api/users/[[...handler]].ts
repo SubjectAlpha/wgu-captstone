@@ -1,4 +1,4 @@
-import { Permissions, Users } from "@prisma/client";
+import { Users } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/opencrm/utility/prisma";
 import { Hash } from "@/opencrm/utility/pwd";
@@ -8,7 +8,6 @@ import {
 	PasswordRegex,
 	UUIDRegex,
 } from "@/opencrm/utility/regex";
-import { equal } from "assert";
 
 type GetResponse = {
 	users?: Users[];
@@ -75,16 +74,19 @@ export default async function handler(
 	} else if (req.method == "POST") {
 		try {
 			const body = req.body;
+			const id = body.id;
 			const name = body.name;
 			const email = body.email;
 			const password = body.password;
+			const permission: string = body.permission;
 			const confirmPassword = body.confirmPassword;
 
 			if (
-				!email ||
+				!email &&
+                (!id &&
 				!password ||
 				!confirmPassword ||
-				password !== confirmPassword
+				password !== confirmPassword)
 			) {
 				res.status(400).json({
 					message:
@@ -96,20 +98,37 @@ export default async function handler(
 				res.status(400).json({ message: "Invalid email address" });
 			}
 
-			if (!PasswordRegex.test(password)) {
-				res.status(400).json({ message: PasswordComplexityMessage });
+			if (id === "") {
+                if (!PasswordRegex.test(password)) {
+                    res.status(400).json({ message: PasswordComplexityMessage });
+                }
+
+				const user = await prisma.users.create({
+					data: {
+						name: name,
+						permission: parseInt(permission) ?? 0,
+						email: email,
+						password: Hash(password),
+					},
+				});
+
+				res.status(200).json({ user: user });
+			} else {
+                const p = parseInt(permission) ?? 0;
+                console.log(p);
+				const user = await prisma.users.update({
+					where: {
+						id: id,
+					},
+					data: {
+						name: name,
+						permission: p,
+						email: email,
+					},
+				});
+
+				res.status(200).json({ user: user });
 			}
-
-			const user = await prisma.users.create({
-				data: {
-					name: name,
-					permission: 0,
-					email: email,
-					password: Hash(password),
-				},
-			});
-
-			res.status(200).json({ user: user });
 		} catch (ex: any) {
 			res.status(500).json({
 				message: ex,
