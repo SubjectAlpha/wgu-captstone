@@ -25,6 +25,7 @@ const PanelPage = ({
 	const path = usePathname();
 	const pathFragments = path.split("/").filter((o) => o !== "");
 	const [user, setUser] = useState(session?.data?.user ?? { permission: 0 });
+    const [isUnderMinimumPermission, setIsUnderMinimumPermission] = useState(false);
 
 	const { data: minimumPermission, isLoading } = useQuery({
 		queryKey: ["permissionQuery"],
@@ -35,27 +36,31 @@ const PanelPage = ({
 	});
 
 	useEffect(() => {
-		console.info({
-			status: session.status,
-			"session data": session.data,
-            "permission eval": user.permission ?? 0 < minimumPermission?.permission.powerLevel,
-			"user perm": user.permission,
-			"minimum power level": minimumPermission?.permission.powerLevel,
+        console.info({
+            status: session.status,
+            "session data": session.data,
+            "isUnderMinimumPermission": isUnderMinimumPermission,
+            "user perm": user.permission,
+            "minimum power level": minimumPermission?.permission.powerLevel ?? 1,
             "minimum permission obj": minimumPermission?.permission
-		});
+        });
 
+        setIsUnderMinimumPermission(user.permission < minimumPermission?.permission.powerLevel ?? 1);
 		if (
 			!isLoading &&
 			(!session ||
 				new Date(session.expires) > new Date() ||
-				user.permission < minimumPermission?.permission.powerLevel)
+				isUnderMinimumPermission)
 		) {
             signIn();
-			//router.push("/auth/signIn");
 		}
-	}, [session, router, minimumPermission, user.permission, isLoading]);
+	}, [session, minimumPermission, user.permission, isLoading, isUnderMinimumPermission]);
 
-    if(!isLoading && session.status == "authenticated") {
+    if(!user.permission || !minimumPermission?.permission.powerLevel){
+        return <span />
+    }
+
+    if(!isLoading && session.status == "authenticated" && !isUnderMinimumPermission) {
         let fullPathFragment: string = "";
         return (
             <div

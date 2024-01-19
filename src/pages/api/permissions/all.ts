@@ -1,7 +1,6 @@
 import { Permissions } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/opencrm/utility/prisma";
-import { randomBytes } from "crypto";
 
 type Response = {
 	permission?: Permissions | Permissions[];
@@ -14,23 +13,20 @@ export default async function handler(
 	res: NextApiResponse<Response>
 ) {
 	if (req.method === "GET") {
-		prisma.permissions
-			.findMany()
-			.then((o) => {
-				if (o) {
-					res.status(200).json({
-						permission: o,
-					});
-				}
-			})
-			.catch((e) => {
-				res.status(500).json({
-					message: e,
+		try {
+			const perms = await prisma.permissions.findMany();
+			if (perms) {
+				res.status(200).json({
+					permission: perms,
 				});
-			})
-			.finally(() => {
+			} else {
 				res.status(404).json({ message: "Not found" });
+			}
+		} catch (e: any) {
+			res.status(500).json({
+				message: e,
 			});
+		}
 	} else {
 		res.status(405).json({ message: "Method not allowed" });
 	}

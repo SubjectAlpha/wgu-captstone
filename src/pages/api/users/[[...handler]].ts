@@ -29,42 +29,34 @@ export default async function handler(
 		try {
 			if (queryParams && queryParams.length > 0) {
 				if (UUIDRegex.test(queryParams[0])) {
-					prisma.users
-						.findUnique({
-							where: {
-								id: queryParams[0],
-							},
-						})
-						.then((o) => {
-							if (o) {
-								const { password, ...user } = o;
-								res.status(200).json({ user: user });
-							}
-						})
-						.catch((e) => {
-							res.status(500).json({ message: e });
-						})
-						.finally(() => {
-							res.status(404).json({ message: "Not found" });
-						});
+					const foundUser = await prisma.users.findUnique({
+						where: {
+							id: queryParams[0],
+						},
+					});
+
+					if (foundUser) {
+						const { password, ...user } = foundUser;
+						res.status(200).json({ user: user });
+					} else {
+						res.status(404).json({ message: "Not found" });
+					}
 				} else {
 					res.status(400).json({ message: "Bad Request" });
 				}
 			} else {
-				prisma.users
-					.findMany()
-					.then((o) => {
-						const users: any = o.map((u) => {
-							const { password, ...user } = u;
-							return user;
-						});
-						res.status(200).json({
-							users: users,
-						});
-					})
-					.catch((e) => {
-						res.status(500).json({ message: e });
+				const foundUsers = await prisma.users.findMany();
+
+				if (foundUsers) {
+					const users: any = foundUsers.map((u) => {
+						const { password, ...user } = u;
+						return user;
 					});
+
+					res.status(200).json({
+						users: users,
+					});
+				}
 			}
 		} catch (ex: any) {
 			res.status(500).json({
@@ -83,10 +75,9 @@ export default async function handler(
 
 			if (
 				!email &&
-                (!id &&
-				!password ||
-				!confirmPassword ||
-				password !== confirmPassword)
+				((!id && !password) ||
+					!confirmPassword ||
+					password !== confirmPassword)
 			) {
 				res.status(400).json({
 					message:
@@ -99,9 +90,11 @@ export default async function handler(
 			}
 
 			if (id === "") {
-                if (!PasswordRegex.test(password)) {
-                    res.status(400).json({ message: PasswordComplexityMessage });
-                }
+				if (!PasswordRegex.test(password)) {
+					res.status(400).json({
+						message: PasswordComplexityMessage,
+					});
+				}
 
 				const user = await prisma.users.create({
 					data: {
@@ -114,8 +107,7 @@ export default async function handler(
 
 				res.status(200).json({ user: user });
 			} else {
-                const p = parseInt(permission) ?? 0;
-                console.log(p);
+				const p = parseInt(permission) ?? 0;
 				const user = await prisma.users.update({
 					where: {
 						id: id,
@@ -134,7 +126,6 @@ export default async function handler(
 				message: ex,
 			});
 		}
-	} else if (req.method == "PUT") {
 	} else {
 		res.status(405).json({ message: "Method not allowed" });
 	}

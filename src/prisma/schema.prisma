@@ -2,47 +2,47 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("MYSQL_URL")
+    provider = "mysql"
+    url      = env("MYSQL_URL")
 }
 
 model SystemSettings {
-  name    String  @unique
-  enabled Boolean @default(true)
+    name    String  @unique
+    enabled Boolean @default(true)
 }
 
 model Users {
-  id         String   @id @default(uuid())
-  createdBy  String   @default("system")
-  updatedBy  String   @default("system")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  email      String   @unique
-  name       String
-  password   String
-  permission Int
+    id         String   @id @default(uuid())
+    createdBy  String   @default("system")
+    updatedBy  String   @default("system")
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now())
+    email      String   @unique
+    name       String
+    password   String
+    permission Int
 }
 
 model Permissions {
-  createdBy  String   @default("system")
-  updatedBy  String   @default("system")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  name       String   @id @unique
-  powerLevel Int      @unique
+    createdBy  String   @default("system")
+    updatedBy  String   @default("system")
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @default(now())
+    name       String   @id @unique
+    powerLevel Int      @unique
 }
 
 model Customers {
-  id        String   @id @default(uuid())
-  createdBy String   @default("system")
-  updatedBy String   @default("system")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  email     String   @unique
-  phone     String
-  company   String
+    id        String   @id @default(uuid())
+    createdBy String   @default("system")
+    updatedBy String   @default("system")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+    email     String   @unique
+    phone     String
+    company   String
 }

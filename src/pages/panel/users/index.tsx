@@ -33,7 +33,7 @@ const Index = () => {
 			let result = await get("/api/users");
 			return result.users;
 		},
-		refetchInterval: -1,
+		refetchInterval: 15 * 1000,
 	});
 
 	const permissionsQuery = useQuery({
@@ -55,6 +55,7 @@ const Index = () => {
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
 			id: string;
+            name: string;
 			email: string;
             permission?: string;
 			password?: string;
@@ -86,7 +87,7 @@ const Index = () => {
 		mutationFn: (uuid: string) => {
 			return get("/api/users/" + uuid);
 		},
-		onSuccess(data, variables, context) {
+		onSuccess(data) {
 			if (data.user) {
 				setId(data.user.id);
 				setName(data.user.name);
@@ -137,11 +138,13 @@ const Index = () => {
 
 			const result = await registrationMutation.mutateAsync({
 				id,
+                name,
 				email,
                 permission
 			});
 
 			if (result) {
+                setShowDialog(false);
 				setSuccessMessage("User account creation successful.");
 			}
 		} else {
@@ -160,6 +163,13 @@ const Index = () => {
 				className="h-full"
 				minimumAccessPermission="admin"
 			>
+                {successMessage.length > 0 ? (
+                    <p className="text-xl bg-white text-center rounded m-4 text-green-500 p-2">
+                        {successMessage}
+                    </p>
+                ) : (
+                    <span />
+                )}
 				<Table
 					title="Users"
 					objectList={usersQuery.data}
