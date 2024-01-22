@@ -8,7 +8,7 @@ import {
 	PasswordComplexityMessage,
 	PasswordRegex,
 } from "@/opencrm/utility/regex";
-import { Typography, Input, Select, Option } from "@material-tailwind/react";
+import { Typography, Input, Select, Option, Button } from "@material-tailwind/react";
 import { Permissions } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { randomBytes } from "crypto";
@@ -24,6 +24,7 @@ const Index = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
+    const [isUserModification, setUserModification] = useState(false);
 	const session = useSession();
 	const router = useRouter();
 
@@ -108,11 +109,13 @@ const Index = () => {
 
 	function onAddClick(event: MouseEventHandler) {
 		resetFields();
+        setUserModification(false);
 		setShowDialog(true);
 	}
 
 	function onRowClick(uuid: string, event: MouseEventHandler) {
 		getUserMutation.mutate(uuid);
+        setUserModification(true);
 		setShowDialog(true);
 	}
 
@@ -174,13 +177,6 @@ const Index = () => {
 					title="Users"
 					objectList={usersQuery.data}
 					onAddClick={onAddClick}
-					hiddenProperties={[
-						"id",
-						"createdBy",
-						"updatedBy",
-						"createdAt",
-						"updatedAt",
-					]}
 					onRowClick={onRowClick}
 				/>
 				<DialogPopup
@@ -257,6 +253,9 @@ const Index = () => {
 								<Option value="-1">Permission</Option>
 							)}
 						</Select>
+                        {isUserModification &&
+                            <Button placeholder={undefined}>Delete</Button>
+                        }
 					</div>
 					{errorMessage.length > 0 ? (
 						<p className="text-red-500 p-2 pt-0">{errorMessage}</p>

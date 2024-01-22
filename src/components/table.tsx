@@ -13,28 +13,49 @@ import {
 	CardFooter,
 	Input,
 } from "@material-tailwind/react";
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, useEffect, useState } from "react";
 
 interface Props {
 	title: string;
 	objectList: any[];
 	onRowClick: Function;
 	onAddClick: Function;
-	hiddenProperties?: string[];
+	showDefaults?: string[];
 	searchFunction?: ChangeEventHandler;
 }
 
 function Table({
 	title,
 	objectList,
-	hiddenProperties,
+	showDefaults,
 	onRowClick,
 	onAddClick,
 	searchFunction,
 }: Props) {
+    const defaultHiddenProperties = [
+        "id",
+        "createdBy",
+        "updatedBy",
+        "createdAt",
+        "updatedAt",
+        "isDeleted"
+    ];
+    // If we want to show a default value we want to create a new array from the hidden properties without the value we wish to show, else just load the defaults.
+    const [hiddenProperties, setHiddenProperties] = useState((showDefaults && showDefaults.length > 0) ? defaultHiddenProperties.filter(item => showDefaults.indexOf(item) < 0) : defaultHiddenProperties);
 	const [bodyKeys, setBodyKeys] = useState(
 		Object.keys(objectList[0]).filter((o) => !hiddenProperties?.includes(o))
 	);
+
+    useEffect(() => {
+
+        if(showDefaults){
+            setHiddenProperties(defaultHiddenProperties.filter(item => showDefaults.indexOf(item) < 0));
+        } else {
+            setHiddenProperties(defaultHiddenProperties);
+        }
+
+
+    }, [showDefaults])
 
 	if (objectList.length < 1) {
 		return <span></span>;
