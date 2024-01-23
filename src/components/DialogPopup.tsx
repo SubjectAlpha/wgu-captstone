@@ -1,4 +1,5 @@
 import React, {
+    EventHandler,
 	Fragment,
 	MouseEventHandler,
 	ReactNode,
@@ -15,31 +16,29 @@ import {
 
 type Props = {
 	show: boolean;
-	setShow: Function;
-	children: ReactNode[];
+	toggleOpen: any;
+	children: ReactNode;
 	onConfirm?: MouseEventHandler;
 	titleText?: string;
 };
 
 export function DialogPopup({
 	show,
-	setShow,
+	toggleOpen,
 	titleText,
 	children,
 	onConfirm,
 }: Props) {
-	const handleOpen = () => setShow(!show);
-
 	return (
 		<Fragment>
-			<Dialog open={show} handler={handleOpen} placeholder={undefined}>
+			<Dialog open={show} handler={toggleOpen} placeholder={undefined}>
 				<DialogHeader placeholder={undefined}>{titleText}</DialogHeader>
-				<DialogBody placeholder={undefined}>{...children}</DialogBody>
+				<DialogBody placeholder={undefined}>{children}</DialogBody>
 				<DialogFooter placeholder={undefined}>
 					<Button
 						variant="outlined"
 						color="red"
-						onClick={handleOpen}
+						onClick={toggleOpen}
 						className="shadow mr-1 hover:bg-red-700 hover:text-white"
 						placeholder={undefined}
 					>

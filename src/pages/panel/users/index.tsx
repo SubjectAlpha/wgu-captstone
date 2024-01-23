@@ -2,14 +2,17 @@ import { DialogPopup } from "@/opencrm/components/DialogPopup";
 import PanelPage from "@/opencrm/components/panel/Page";
 import Table from "@/opencrm/components/table";
 import { get, post } from "@/opencrm/utility/fetch";
-import { Hash } from "@/opencrm/utility/pwd";
 import {
 	EmailRegex,
-	PasswordComplexityMessage,
-	PasswordRegex,
 } from "@/opencrm/utility/regex";
-import { Typography, Input, Select, Option, Button } from "@material-tailwind/react";
-import { Permissions } from "@prisma/client";
+import {
+	Typography,
+	Input,
+	Select,
+	Option,
+	Button,
+} from "@material-tailwind/react";
+import { Permissions, Users } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { randomBytes } from "crypto";
 import { useSession } from "next-auth/react";
@@ -24,7 +27,10 @@ const Index = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
-    const [isUserModification, setUserModification] = useState(false);
+
+	const [showConfirmationDialog, setShowConfirmationDialog] =
+		useState(false);
+    const [selectedUser, setSelectedUser] = useState({} as Users);
 	const session = useSession();
 	const router = useRouter();
 
@@ -53,21 +59,25 @@ const Index = () => {
 		}
 	}, [email]);
 
+    useEffect(() => {
+        console.log("edit", showDialog, "confirm", showConfirmationDialog);
+    }, [showConfirmationDialog, showDialog])
+
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
 			id: string;
-            name: string;
+			name: string;
 			email: string;
-            permission?: string;
+			permission?: string;
 			password?: string;
 			confirmPassword?: string;
 		}) => {
 			if (!body.id) {
-                const password = (randomBytes(24).toString("hex")) + "!@";
-                body.password = password;
-                body.confirmPassword = password;
+				const password = randomBytes(24).toString("hex") + "!@";
+				body.password = password;
+				body.confirmPassword = password;
 			}
-            console.log(body);
+			console.log(body);
 			return post("/api/users", body);
 		},
 		onSuccess: (data) => {
@@ -94,6 +104,7 @@ const Index = () => {
 				setName(data.user.name);
 				setEmail(data.user.email);
 				setPermission(data.user.permission.toString());
+                setSelectedUser(data.user);
 			}
 		},
 	});
@@ -109,13 +120,12 @@ const Index = () => {
 
 	function onAddClick(event: MouseEventHandler) {
 		resetFields();
-        setUserModification(false);
+		setSelectedUser({} as Users);
 		setShowDialog(true);
 	}
 
 	function onRowClick(uuid: string, event: MouseEventHandler) {
 		getUserMutation.mutate(uuid);
-        setUserModification(true);
 		setShowDialog(true);
 	}
 
@@ -141,13 +151,13 @@ const Index = () => {
 
 			const result = await registrationMutation.mutateAsync({
 				id,
-                name,
+				name,
 				email,
-                permission
+				permission,
 			});
 
 			if (result) {
-                setShowDialog(false);
+				setShowDialog(false);
 				setSuccessMessage("User account creation successful.");
 			}
 		} else {
@@ -158,6 +168,10 @@ const Index = () => {
 		}
 	}
 
+    async function deleteClick() {
+
+    }
+
 	if (usersQuery.data) {
 		return (
 			<PanelPage
@@ -166,13 +180,11 @@ const Index = () => {
 				className="h-full"
 				minimumAccessPermission="admin"
 			>
-                {successMessage.length > 0 ? (
-                    <p className="text-xl bg-white text-center rounded m-4 text-green-500 p-2">
-                        {successMessage}
-                    </p>
-                ) : (
-                    <span />
-                )}
+				{successMessage.length > 0 && (
+					<p className="text-xl bg-white text-center rounded m-4 text-green-500 p-2">
+						{successMessage}
+					</p>
+				)}
 				<Table
 					title="Users"
 					objectList={usersQuery.data}
@@ -180,16 +192,19 @@ const Index = () => {
 					onRowClick={onRowClick}
 				/>
 				<DialogPopup
+                    key="userDialog"
 					show={showDialog}
-					titleText="Modify User"
-					setShow={setShowDialog}
+					titleText={selectedUser.id ? "Modify User" : "Create User"}
+					toggleOpen={() => {
+                        console.log("calling 1")
+                        setShowDialog(!showDialog);
+                    }}
 					onConfirm={registerClick}
 				>
 					<div className="mb-1 flex flex-col gap-4">
 						<Typography
 							variant="h6"
 							color="blue-gray"
-							className="-mb-3"
 							placeholder={undefined}
 						>
 							{"User's Name"}
@@ -209,7 +224,6 @@ const Index = () => {
 						<Typography
 							variant="h6"
 							color="blue-gray"
-							className="-mb-3"
 							placeholder={undefined}
 						>
 							Your Email
@@ -228,7 +242,6 @@ const Index = () => {
 						<Typography
 							variant="h6"
 							color="blue-gray"
-							className="-mb-3"
 							placeholder={undefined}
 						>
 							Permission Level
@@ -253,9 +266,13 @@ const Index = () => {
 								<Option value="-1">Permission</Option>
 							)}
 						</Select>
-                        {isUserModification &&
-                            <Button placeholder={undefined}>Delete</Button>
-                        }
+						{selectedUser.id && (
+							<Button placeholder={undefined} onClick={() => {
+                                setShowConfirmationDialog(true);
+                            }}>
+								Delete
+							</Button>
+						)}
 					</div>
 					{errorMessage.length > 0 ? (
 						<p className="text-red-500 p-2 pt-0">{errorMessage}</p>
@@ -263,6 +280,25 @@ const Index = () => {
 						<span />
 					)}
 				</DialogPopup>
+                <DialogPopup
+                    key="confirmationDialog"
+                    show={showConfirmationDialog}
+					titleText="Delete User?"
+					toggleOpen={() => {
+                        console.log("callin g")
+                        setShowConfirmationDialog(!showConfirmationDialog);
+                    }}
+					onConfirm={deleteClick}
+                >
+                    <Typography
+                        variant="h6"
+                        color="blue-gray"
+                        className="mb-3"
+                        placeholder={undefined}
+                    >
+                        Really delete {selectedUser?.name}?
+                    </Typography>
+                </DialogPopup>
 			</PanelPage>
 		);
 	} else {
