@@ -1,5 +1,5 @@
 import React, {
-    EventHandler,
+	EventHandler,
 	Fragment,
 	MouseEventHandler,
 	ReactNode,
@@ -27,34 +27,38 @@ export function DialogPopup({
 	toggleOpen,
 	titleText,
 	children,
-	onConfirm,
+	onConfirm
 }: Props) {
 	return (
-		<Fragment>
-			<Dialog open={show} handler={toggleOpen} placeholder={undefined}>
-				<DialogHeader placeholder={undefined}>{titleText}</DialogHeader>
-				<DialogBody placeholder={undefined}>{children}</DialogBody>
-				<DialogFooter placeholder={undefined}>
-					<Button
-						variant="outlined"
-						color="red"
-						onClick={toggleOpen}
-						className="shadow mr-1 hover:bg-red-700 hover:text-white"
-						placeholder={undefined}
-					>
-						Cancel
-					</Button>
-					<Button
-						variant="gradient"
-						color="green"
-						onClick={onConfirm}
-						className="shadow hover:scale-110 hover:bg-white hover:text-green"
-						placeholder={undefined}
-					>
-						Confirm
-					</Button>
-				</DialogFooter>
-			</Dialog>
-		</Fragment>
+		<Dialog
+			open={show}
+			handler={toggleOpen}
+			placeholder={undefined}
+			key={titleText}
+			dismiss={{ enabled: true, outsidePress: true }}
+		>
+			<DialogHeader placeholder={undefined}>{titleText}</DialogHeader>
+			<DialogBody placeholder={undefined}>{children}</DialogBody>
+			<DialogFooter placeholder={undefined}>
+				<Button
+					variant="outlined"
+					color="red"
+					onClick={toggleOpen}
+					className="shadow mr-1 hover:bg-red-700 hover:text-white"
+					placeholder={undefined}
+				>
+					Cancel
+				</Button>
+				<Button
+					variant="gradient"
+					color="green"
+					onClick={onConfirm}
+					className="shadow hover:scale-110 hover:bg-white hover:text-green"
+					placeholder={undefined}
+				>
+					Confirm
+				</Button>
+			</DialogFooter>
+		</Dialog>
 	);
 }

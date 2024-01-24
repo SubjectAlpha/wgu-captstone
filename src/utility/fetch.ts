@@ -14,3 +14,8 @@ export async function put(uri: string, body?: any) {
     const { data } = await axios.put(uri, body);
     return data;
 }
+
+export async function remove(uri: string, body?: any) {
+    const { data } = await axios.delete(uri, body);
+    return data;
+}

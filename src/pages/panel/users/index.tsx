@@ -1,7 +1,7 @@
 import { DialogPopup } from "@/opencrm/components/DialogPopup";
 import PanelPage from "@/opencrm/components/panel/Page";
 import Table from "@/opencrm/components/table";
-import { get, post } from "@/opencrm/utility/fetch";
+import { get, post, remove } from "@/opencrm/utility/fetch";
 import {
 	EmailRegex,
 } from "@/opencrm/utility/regex";
@@ -59,10 +59,6 @@ const Index = () => {
 		}
 	}, [email]);
 
-    useEffect(() => {
-        console.log("edit", showDialog, "confirm", showConfirmationDialog);
-    }, [showConfirmationDialog, showDialog])
-
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
 			id: string;
@@ -108,6 +104,13 @@ const Index = () => {
 			}
 		},
 	});
+
+    const deleteUserMutation = useMutation({
+        mutationKey: ["deleteUserMutation"],
+        mutationFn: (uuid: string) => {
+            return remove("/api/users/" + uuid);
+        }
+    })
 
 	function resetFields() {
 		setId("");
@@ -169,7 +172,8 @@ const Index = () => {
 	}
 
     async function deleteClick() {
-
+        const result = await deleteUserMutation.mutateAsync(selectedUser.id);
+        console.log("delete result", result);
     }
 
 	if (usersQuery.data) {
@@ -191,9 +195,25 @@ const Index = () => {
 					onAddClick={onAddClick}
 					onRowClick={onRowClick}
 				/>
+                <DialogPopup
+                    show={showConfirmationDialog}
+					titleText="Delete User?"
+					toggleOpen={() => {
+                        setShowConfirmationDialog(!showConfirmationDialog);
+                    }}
+					onConfirm={deleteClick}
+                >
+                    <Typography
+                        variant="h6"
+                        color="blue-gray"
+                        className="mb-3"
+                        placeholder={undefined}
+                    >
+                        Really delete {selectedUser?.name}?
+                    </Typography>
+                </DialogPopup>
 				<DialogPopup
-                    key="userDialog"
-					show={showDialog}
+                    show={showDialog}
 					titleText={selectedUser.id ? "Modify User" : "Create User"}
 					toggleOpen={() => {
                         console.log("calling 1")
@@ -268,6 +288,7 @@ const Index = () => {
 						</Select>
 						{selectedUser.id && (
 							<Button placeholder={undefined} onClick={() => {
+                                setShowDialog(false);
                                 setShowConfirmationDialog(true);
                             }}>
 								Delete
@@ -280,25 +301,7 @@ const Index = () => {
 						<span />
 					)}
 				</DialogPopup>
-                <DialogPopup
-                    key="confirmationDialog"
-                    show={showConfirmationDialog}
-					titleText="Delete User?"
-					toggleOpen={() => {
-                        console.log("callin g")
-                        setShowConfirmationDialog(!showConfirmationDialog);
-                    }}
-					onConfirm={deleteClick}
-                >
-                    <Typography
-                        variant="h6"
-                        color="blue-gray"
-                        className="mb-3"
-                        placeholder={undefined}
-                    >
-                        Really delete {selectedUser?.name}?
-                    </Typography>
-                </DialogPopup>
+
 			</PanelPage>
 		);
 	} else {

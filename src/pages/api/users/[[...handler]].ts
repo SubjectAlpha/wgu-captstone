@@ -134,6 +134,7 @@ export default async function handler(
         const queryParams = req.query.handler as string[];
 		try {
 			if (queryParams && queryParams.length > 0) {
+                console.log(queryParams)
 				if (UUIDRegex.test(queryParams[0])) {
 					await prisma.users.update({
                         where: {
