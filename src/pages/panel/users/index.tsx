@@ -3,9 +3,7 @@ import PanelPage from "@/opencrm/components/panel/Page";
 import Table from "@/opencrm/components/table";
 import { get, post, remove } from "@/opencrm/utility/fetch";
 import { Generate } from "@/opencrm/utility/pwd";
-import {
-	EmailRegex,
-} from "@/opencrm/utility/regex";
+import { EmailRegex } from "@/opencrm/utility/regex";
 import {
 	Typography,
 	Input,
@@ -18,7 +16,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { randomBytes } from "crypto";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, MouseEventHandler, useEffect, useState } from "react";
 
 const Index = () => {
 	const [id, setId] = useState("");
@@ -28,10 +26,9 @@ const Index = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
-
-	const [showConfirmationDialog, setShowConfirmationDialog] =
-		useState(false);
-    const [selectedUser, setSelectedUser] = useState({} as Users);
+    const [searchText, setSearchText] = useState("");
+	const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+	const [selectedUser, setSelectedUser] = useState({} as Users);
 	const session = useSession();
 	const router = useRouter();
 
@@ -74,7 +71,6 @@ const Index = () => {
 				body.password = password;
 				body.confirmPassword = password;
 			}
-			console.log(body);
 			return post("/api/users", body);
 		},
 		onSuccess: (data) => {
@@ -101,17 +97,17 @@ const Index = () => {
 				setName(data.user.name);
 				setEmail(data.user.email);
 				setPermission(data.user.permission.toString());
-                setSelectedUser(data.user);
+				setSelectedUser(data.user);
 			}
 		},
 	});
 
-    const deleteUserMutation = useMutation({
-        mutationKey: ["deleteUserMutation"],
-        mutationFn: (uuid: string) => {
-            return remove("/api/users/" + uuid);
-        }
-    })
+	const deleteUserMutation = useMutation({
+		mutationKey: ["deleteUserMutation"],
+		mutationFn: (uuid: string) => {
+			return remove("/api/users/" + uuid);
+		},
+	});
 
 	function resetFields() {
 		setId("");
@@ -129,6 +125,7 @@ const Index = () => {
 	}
 
 	function onRowClick(uuid: string, event: MouseEventHandler) {
+		setErrorMessage("");
 		getUserMutation.mutate(uuid);
 		setShowDialog(true);
 	}
@@ -172,10 +169,13 @@ const Index = () => {
 		}
 	}
 
-    async function deleteClick() {
-        const result = await deleteUserMutation.mutateAsync(selectedUser.id);
-        console.log("delete result", result);
-    }
+	async function deleteClick() {
+		const result = await deleteUserMutation.mutateAsync(selectedUser.id);
+		if (result.message == "user deleted successfully") {
+			setSuccessMessage("User deleted successfully");
+			setShowConfirmationDialog(false);
+		}
+	}
 
 	if (usersQuery.data) {
 		return (
@@ -196,30 +196,29 @@ const Index = () => {
 					onAddClick={onAddClick}
 					onRowClick={onRowClick}
 				/>
-                <DialogPopup
-                    show={showConfirmationDialog}
+				<DialogPopup
+					show={showConfirmationDialog}
 					titleText="Delete User?"
 					toggleOpen={() => {
-                        setShowConfirmationDialog(!showConfirmationDialog);
-                    }}
+						setShowConfirmationDialog(!showConfirmationDialog);
+					}}
 					onConfirm={deleteClick}
-                >
-                    <Typography
-                        variant="h6"
-                        color="blue-gray"
-                        className="mb-3"
-                        placeholder={undefined}
-                    >
-                        Really delete {selectedUser?.name}?
-                    </Typography>
-                </DialogPopup>
+				>
+					<Typography
+						variant="h6"
+						color="blue-gray"
+						className="mb-3"
+						placeholder={undefined}
+					>
+						Really delete {selectedUser?.name}?
+					</Typography>
+				</DialogPopup>
 				<DialogPopup
-                    show={showDialog}
+					show={showDialog}
 					titleText={selectedUser.id ? "Modify User" : "Create User"}
 					toggleOpen={() => {
-                        console.log("calling 1")
-                        setShowDialog(!showDialog);
-                    }}
+						setShowDialog(!showDialog);
+					}}
 					onConfirm={registerClick}
 				>
 					<div className="mb-1 flex flex-col gap-4">
@@ -288,10 +287,13 @@ const Index = () => {
 							)}
 						</Select>
 						{selectedUser.id && (
-							<Button placeholder={undefined} onClick={() => {
-                                setShowDialog(false);
-                                setShowConfirmationDialog(true);
-                            }}>
+							<Button
+								placeholder={undefined}
+								onClick={() => {
+									setShowDialog(false);
+									setShowConfirmationDialog(true);
+								}}
+							>
 								Delete
 							</Button>
 						)}
@@ -302,7 +304,6 @@ const Index = () => {
 						<span />
 					)}
 				</DialogPopup>
-
 			</PanelPage>
 		);
 	} else {

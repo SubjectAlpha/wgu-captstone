@@ -21,7 +21,6 @@ interface Props {
 	onRowClick: Function;
 	onAddClick: Function;
 	showDefaults?: string[];
-	searchFunction?: ChangeEventHandler;
 }
 
 function Table({
@@ -30,36 +29,59 @@ function Table({
 	showDefaults,
 	onRowClick,
 	onAddClick,
-	searchFunction,
 }: Props) {
-    const defaultHiddenProperties = [
-        "id",
-        "createdBy",
-        "updatedBy",
-        "createdAt",
-        "updatedAt",
-        "isDeleted"
-    ];
-    // If we want to show a default value we want to create a new array from the hidden properties without the value we wish to show, else just load the defaults.
-    const [hiddenProperties, setHiddenProperties] = useState((showDefaults && showDefaults.length > 0) ? defaultHiddenProperties.filter(item => showDefaults.indexOf(item) < 0) : defaultHiddenProperties);
+	const defaultHiddenProperties = [
+		"id",
+		"createdBy",
+		"updatedBy",
+		"createdAt",
+		"updatedAt",
+		"isDeleted",
+	];
+	// If we want to show a default value we want to create a new array from the hidden properties without the value we wish to show, else just load the defaults.
+	const [hiddenProperties, setHiddenProperties] = useState(
+		showDefaults && showDefaults.length > 0
+			? defaultHiddenProperties.filter(
+					(item) => showDefaults.indexOf(item) < 0
+			  )
+			: defaultHiddenProperties
+	);
 	const [bodyKeys, setBodyKeys] = useState(
 		Object.keys(objectList[0]).filter((o) => !hiddenProperties?.includes(o))
 	);
+	const [displayList, setDisplayList] = useState(objectList);
+	const [searchText, setSearchText] = useState("");
 
-    useEffect(() => {
-
-        if(showDefaults){
-            setHiddenProperties(defaultHiddenProperties.filter(item => showDefaults.indexOf(item) < 0));
-        } else {
-            setHiddenProperties(defaultHiddenProperties);
-        }
-
-
-    }, [showDefaults])
+	useEffect(() => {
+		if (showDefaults) {
+			setHiddenProperties(
+				defaultHiddenProperties.filter(
+					(item) => showDefaults.indexOf(item) < 0
+				)
+			);
+		} else {
+			setHiddenProperties(defaultHiddenProperties);
+		}
+	}, [showDefaults]);
 
 	if (objectList.length < 1) {
 		return <span></span>;
 	}
+
+	const searchFunction: ChangeEventHandler<HTMLInputElement> = (e) => {
+		const val = e.target.value;
+		const retList: any[] = [];
+
+		objectList.forEach((o) => {
+			bodyKeys.forEach((k) => {
+                if(typeof(o[k]) == "string" && (o[k]).includes(val) && !retList.includes(o)){
+                    retList.push(o);
+                }
+
+			});
+		});
+		setDisplayList(retList);
+	};
 
 	return (
 		<Card className="h-full w-full p-2" placeholder={undefined}>
@@ -117,19 +139,17 @@ function Table({
 										placeholder={undefined}
 									>
 										{head.toLocaleUpperCase()}{" "}
-										{index !== bodyKeys.length - 1 && (
-											<ChevronUpDownIcon
-												strokeWidth={2}
-												className="h-4 w-4"
-											/>
-										)}
+										<ChevronUpDownIcon
+											strokeWidth={2}
+											className="h-4 w-4"
+										/>
 									</Typography>
 								</th>
 							))}
 						</tr>
 					</thead>
 					<tbody>
-						{objectList.map((o, index) => {
+						{displayList.map((o, index) => {
 							const isLast = index === objectList.length - 1;
 							const classes = isLast
 								? "p-4"

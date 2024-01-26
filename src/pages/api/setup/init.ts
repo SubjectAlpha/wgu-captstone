@@ -27,7 +27,6 @@ export default async function handler(
 			})
 			.then(async (o) => {
 				if (!o) {
-					console.log("STARTING");
 					await prisma.permissions.createMany({
 						data: [
 							{

@@ -17,7 +17,7 @@ export function Compare(rawPassword: string, hashedPassword: string) {
 export function Generate(length: number) {
     let password = "";
     for(let i = 1; i < length + 1; i++) {
-        if(i % 4) {
+        if(i % 4 == 0) {
             password += getRandom("int");
         } else {
             let char = getRandom("char");

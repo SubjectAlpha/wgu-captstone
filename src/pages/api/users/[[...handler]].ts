@@ -46,10 +46,10 @@ export default async function handler(
 				}
 			} else {
 				const foundUsers = await prisma.users.findMany({
-                    where: {
-                        isDeleted: false
-                    }
-                });
+					where: {
+						isDeleted: false,
+					},
+				});
 
 				if (foundUsers) {
 					const users: any = foundUsers.map((u) => {
@@ -131,30 +131,29 @@ export default async function handler(
 			});
 		}
 	} else if (req.method === "DELETE") {
-        const queryParams = req.query.handler as string[];
+		const queryParams = req.query.handler as string[];
 		try {
 			if (queryParams && queryParams.length > 0) {
-                console.log(queryParams)
 				if (UUIDRegex.test(queryParams[0])) {
 					await prisma.users.update({
-                        where: {
-                            id: queryParams[0],
-                        },
-                        data: {
-                            isDeleted: true
-                        },
-                    });
-                    res.status(200).json({
-                        message: "user deleted successfully"
-                    })
-                }
-            }
-        } catch(e) {
-            res.status(500).json({
-                message: e + ""
-            })
-        }
-    } else {
+						where: {
+							id: queryParams[0],
+						},
+						data: {
+							isDeleted: true,
+						},
+					});
+					res.status(200).json({
+						message: "user deleted successfully",
+					});
+				}
+			}
+		} catch (e) {
+			res.status(500).json({
+				message: e + "",
+			});
+		}
+	} else {
 		res.status(405).json({ message: "Method not allowed" });
 	}
 }
