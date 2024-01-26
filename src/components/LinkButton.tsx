@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MouseEventHandler } from "react";
 
 type props = {
-	children: any;
+	children: React.ReactNode;
 	href?: string;
 	className?: string;
 	onClick?: MouseEventHandler;

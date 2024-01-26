@@ -2,6 +2,7 @@ import { DialogPopup } from "@/opencrm/components/DialogPopup";
 import PanelPage from "@/opencrm/components/panel/Page";
 import Table from "@/opencrm/components/table";
 import { get, post, remove } from "@/opencrm/utility/fetch";
+import { Generate } from "@/opencrm/utility/pwd";
 import {
 	EmailRegex,
 } from "@/opencrm/utility/regex";
@@ -69,7 +70,7 @@ const Index = () => {
 			confirmPassword?: string;
 		}) => {
 			if (!body.id) {
-				const password = randomBytes(24).toString("hex") + "!@";
+				const password = Generate(24);
 				body.password = password;
 				body.confirmPassword = password;
 			}

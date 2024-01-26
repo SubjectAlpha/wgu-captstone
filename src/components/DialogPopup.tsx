@@ -16,7 +16,7 @@ import {
 
 type Props = {
 	show: boolean;
-	toggleOpen: any;
+	toggleOpen: MouseEventHandler;
 	children: ReactNode;
 	onConfirm?: MouseEventHandler;
 	titleText?: string;
@@ -35,7 +35,6 @@ export function DialogPopup({
 			handler={toggleOpen}
 			placeholder={undefined}
 			key={titleText}
-			dismiss={{ enabled: true, outsidePress: true }}
 		>
 			<DialogHeader placeholder={undefined}>{titleText}</DialogHeader>
 			<DialogBody placeholder={undefined}>{children}</DialogBody>

@@ -37,7 +37,7 @@ export default async function handler(
 
 					if (foundUser) {
 						const { password, ...user } = foundUser;
-						res.status(200).json({ user: user });
+						res.status(200).json({ user: user as Users });
 					} else {
 						res.status(404).json({ message: "Not found" });
 					}

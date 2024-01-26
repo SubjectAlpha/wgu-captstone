@@ -58,14 +58,14 @@ const handler = NextAuth({
             if(convertedUser?.name) {
                 token.name = convertedUser.name
             }
-            if(convertedUser?.permission!) {
+            if(convertedUser?.permission) {
                 token.permission = convertedUser.permission;
             }
             return token
         },
         async session({session, token, user}) {
             session.user = token as Users;
-            session.user.permission = token.permission;
+            (session.user as Users).permission = token.permission as number;
             return session;
         }
     }

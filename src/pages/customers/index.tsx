@@ -20,13 +20,13 @@ const Index = () => {
 
 	return (
 		<SessionPage router={router} session={session} className="h-full">
-			<Table
+			{/* <Table
 				title="Customers"
 				objectList={customers}
 				onRowClick={(id, e) => {
 					console.log(e);
 				}}
-			/>
+			/> */}
 		</SessionPage>
 	);
 };

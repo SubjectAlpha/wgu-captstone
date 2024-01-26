@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 import Link from "next/link";
 import { defaultNavItems, NavItem } from "./defaultNavItems";
@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { signOut, useSession } from "next-auth/react";
 import LinkButton from "./LinkButton";
+import { Users } from "@prisma/client";
 
 type Props = {
 	collapsed: boolean;
@@ -23,6 +24,13 @@ const Sidebar = ({
 }: Props) => {
 	const Icon = collapsed ? ChevronDoubleRightIcon : ChevronDoubleLeftIcon;
 	const { status: sessionStatus, data: token } = useSession();
+    const [tokenUser, setTokenUser] = useState({} as Users);
+    useEffect(() => {
+        if(token?.user) {
+            setTokenUser(token.user as Users)
+        }
+    }, [token])
+
 	return (
 		<div
 			className={classNames({
@@ -100,9 +108,9 @@ const Sidebar = ({
 							<div className="flex flex-col items-center rounded bg-gray-900/50 uppercase box-shadow">
 								<Link
 									className="text-white my-3 hover:text-2xl hover:text-indigo-300"
-									href={"/user/" + token?.user?.id}
+									href={"/user/" + tokenUser.id}
 								>
-									{token?.user?.name}
+									{tokenUser.name}
 								</Link>
 								<LinkButton
 									className="mb-6"

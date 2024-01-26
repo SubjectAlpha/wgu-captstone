@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { NextRouter } from "next/router";
 import { PropsWithChildren } from "react";
 

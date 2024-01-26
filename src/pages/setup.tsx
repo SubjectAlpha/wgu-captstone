@@ -87,7 +87,7 @@ export default function Setup() {
 							label="Use dev data?"
 							crossOrigin=""
 							onClick={(e) => {
-								setDevData(e.target.checked);
+								setDevData((e.target as HTMLInputElement).checked);
 							}}
 						/>
 					</div>
