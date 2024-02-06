@@ -1,13 +1,13 @@
 import { Users } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/opencrm/utility/prisma";
-import { Hash } from "@/opencrm/utility/pwd";
+import prisma from "@/opencms/utility/prisma";
+import { Hash } from "@/opencms/utility/pwd";
 import {
 	EmailRegex,
 	PasswordComplexityMessage,
 	PasswordRegex,
 	UUIDRegex,
-} from "@/opencrm/utility/regex";
+} from "@/opencms/utility/regex";
 
 type GetResponse = {
 	users?: Users[];

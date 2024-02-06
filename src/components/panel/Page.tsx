@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Head from "next/head";
 import { useQuery } from "@tanstack/react-query";
-import { get } from "@/opencrm/utility/fetch";
+import { get } from "@/opencms/utility/fetch";
 import { signIn } from "next-auth/react";
 
 interface Props extends PropsWithChildren {
@@ -71,13 +71,13 @@ const PanelPage = ({
                 <Head>
                     <title>Admin Panel</title>
                     <meta
-                        property="opencrm:title"
+                        property="opencms:title"
                         key="title"
                         content="Admin Panel"
                     />
                 </Head>
                 <Breadcrumbs className="my-2" placeholder="breadcrumbs">
-                    <Link href="/">opencrm</Link>
+                    <Link href="/">opencms</Link>
                     {pathFragments.map((o, i) => {
                         fullPathFragment += "/" + o;
                         return (

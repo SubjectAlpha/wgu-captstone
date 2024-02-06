@@ -1,4 +1,4 @@
-import "@/opencrm/styles/globals.css";
+import "@/opencms/styles/globals.css";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "next-auth/react";
@@ -18,10 +18,10 @@ export default function App({
 				<ThemeProvider>
 					<Layout>
 						<Head>
-							<title>OpenCRM</title>
+							<title>OpenCMS</title>
 							<meta
-								property="opencrm:title"
-								content="OpenCRM"
+								property="opencms:title"
+								content="OpenCMS"
 								key="title"
 							/>
 						</Head>

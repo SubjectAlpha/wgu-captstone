@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { Compare } from "@/opencrm/utility/pwd";
-import prisma from "@/opencrm/utility/prisma";
+import { Compare } from "@/opencms/utility/pwd";
+import prisma from "@/opencms/utility/prisma";
 import { Users } from "@prisma/client";
 
 const handler = NextAuth({

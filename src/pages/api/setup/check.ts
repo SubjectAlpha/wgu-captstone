@@ -1,6 +1,6 @@
 import { Users } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/opencrm/utility/prisma";
+import prisma from "@/opencms/utility/prisma";
 
 type Response = {
 	user?: Users;

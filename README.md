@@ -2,7 +2,7 @@
 
 -   secure api routes w jwt, next auth can do this automatically and htey have docs
 -   setup program to check if db exists and take values and create new db
--   -   this should only be able to be accessed if there is no 'opencrm' database
+-   -   this should only be able to be accessed if there is no 'opencms' database
 -   write docs
 -   -   all below env vars required
 -   mobile friendly-ness

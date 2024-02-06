@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { EmailRegex } from "@/opencrm/utility/regex";
+import { EmailRegex } from "@/opencms/utility/regex";
 import { Button, Card, Input, Typography } from "@material-tailwind/react";
 
 export default function SignIn() {

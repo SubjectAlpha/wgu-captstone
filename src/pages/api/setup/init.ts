@@ -1,11 +1,11 @@
-import { Hash } from "@/opencrm/utility/pwd";
+import { Hash } from "@/opencms/utility/pwd";
 import { Users } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "@/opencrm/utility/prisma";
+import prisma from "@/opencms/utility/prisma";
 import {
 	PasswordComplexityMessage,
 	PasswordRegex,
-} from "@/opencrm/utility/regex";
+} from "@/opencms/utility/regex";
 
 type Response = {
 	user?: Users;

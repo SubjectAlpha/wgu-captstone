@@ -2,12 +2,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { post } from "@/opencrm/utility/fetch";
+import { post } from "@/opencms/utility/fetch";
 import {
 	EmailRegex,
 	PasswordComplexityMessage,
 	PasswordRegex,
-} from "@/opencrm/utility/regex";
+} from "@/opencms/utility/regex";
 import { useRouter } from "next/router";
 import { Card, Typography, Button, Input } from "@material-tailwind/react";
 

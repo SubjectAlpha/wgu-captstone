@@ -14,7 +14,7 @@ services:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: example
-  # opencrm:
+  # opencms:
   #   image: open-crm
   #   ports:
   #   - "3000:80"

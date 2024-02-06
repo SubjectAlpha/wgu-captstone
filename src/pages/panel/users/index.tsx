@@ -1,9 +1,9 @@
-import { DialogPopup } from "@/opencrm/components/DialogPopup";
-import PanelPage from "@/opencrm/components/panel/Page";
-import Table from "@/opencrm/components/table";
-import { get, post, remove } from "@/opencrm/utility/fetch";
-import { Generate } from "@/opencrm/utility/pwd";
-import { EmailRegex } from "@/opencrm/utility/regex";
+import { DialogPopup } from "@/opencms/components/DialogPopup";
+import PanelPage from "@/opencms/components/panel/Page";
+import Table from "@/opencms/components/table";
+import { get, post, remove } from "@/opencms/utility/fetch";
+import { Generate } from "@/opencms/utility/pwd";
+import { EmailRegex } from "@/opencms/utility/regex";
 import {
 	Typography,
 	Input,

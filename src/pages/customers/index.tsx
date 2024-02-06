@@ -1,5 +1,5 @@
-import SessionPage from "@/opencrm/components/SessionPage";
-import Table from "@/opencrm/components/table";
+import SessionPage from "@/opencms/components/SessionPage";
+import Table from "@/opencms/components/table";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 

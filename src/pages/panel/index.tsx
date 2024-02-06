@@ -2,7 +2,7 @@ import { Card } from "@material-tailwind/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import PanelPage from "@/opencrm/components/panel/Page";
+import PanelPage from "@/opencms/components/panel/Page";
 
 interface Props {}
 

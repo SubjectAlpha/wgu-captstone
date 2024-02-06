@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { PropsWithChildren, useState } from "react";
-import Sidebar from "@/opencrm/components/Sidebar";
+import Sidebar from "@/opencms/components/Sidebar";
 
 // this should satisfy the inheritance requirement
 interface Props extends PropsWithChildren {

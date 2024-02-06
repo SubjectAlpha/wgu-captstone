@@ -1,5 +1,5 @@
 import { EventHandler, MouseEventHandler, useEffect, useState } from "react";
-import { post } from "@/opencrm/utility/fetch";
+import { post } from "@/opencms/utility/fetch";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Checkbox, Input, Typography } from "@material-tailwind/react";
 import { useRouter } from "next/router";
@@ -51,7 +51,7 @@ export default function Setup() {
 		return (
 			<div className="container mx-auto flex flex-col items-center bg-gray-900/50 w-1/2 h-1/2 m-64 p-12 mb-0 gap-4">
 				<Typography type="h1" placeholder="title">
-					Initialize OpenCRM
+					Initialize OpenCMS
 				</Typography>
 				<form onSubmit={onClick} className="flex flex-col gap-2">
 					<Input
