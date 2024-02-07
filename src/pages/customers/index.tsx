@@ -2,6 +2,7 @@ import SessionPage from "@/opencms/components/SessionPage";
 import Table from "@/opencms/components/table";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { MouseEventHandler } from "react";
 
 const Index = () => {
 	const session = useSession();
@@ -18,15 +19,22 @@ const Index = () => {
 		});
 	}
 
+    const onAddClick = (e: MouseEventHandler) => {
+
+    }
+
+    const onRowClick = (uuid: string, e: MouseEventHandler) => {
+        console.log(e);
+    }
+
 	return (
 		<SessionPage router={router} session={session} className="h-full">
-			{/* <Table
+			<Table
 				title="Customers"
 				objectList={customers}
-				onRowClick={(id, e) => {
-					console.log(e);
-				}}
-			/> */}
+				onRowClick={onRowClick}
+                onAddClick={onAddClick}
+			/>
 		</SessionPage>
 	);
 };

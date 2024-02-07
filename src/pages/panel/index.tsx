@@ -29,15 +29,17 @@ export default function AdminPanel(props: Props) {
 					placeholder={undefined}
 					className="w-48 h-48 p-5 text-center m-4"
 				>
-					<Link href="" className="w-full h-full">
-						Misc
+					<Link href="/panel/reports" className="w-full h-full">
+						Report Generation
 					</Link>
 				</Card>
 				<Card
 					placeholder={undefined}
 					className="w-48 h-48 p-5 text-center m-4"
 				>
-					<Link href="" className="w-full h-full">
+					<Link href="" className="w-full h-full" onClick={() => {
+                        alert("This is not yet implemented")
+                    }}>
 						System Settings
 					</Link>
 				</Card>
