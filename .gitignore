@@ -1,2 +1,6 @@
 
 /mysql/
+/src/.env
+/src/prisma/migrations/
+
+.DS_Store
