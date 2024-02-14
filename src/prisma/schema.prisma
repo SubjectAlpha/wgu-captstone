@@ -12,7 +12,8 @@ datasource db {
 
 model SystemSettings {
     name    String  @unique
-    enabled Boolean @default(true)
+    value   String
+    enabled Boolean @default(false)
 }
 
 model Users {
