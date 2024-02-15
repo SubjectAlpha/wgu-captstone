@@ -8,3 +8,4 @@ This application is meant to be as user friendly as possible. To use the applica
 3. Once you have access to the Admin Panel, you will be able to view the users list, as well as modify customer entries on the Customer Page, which can be accessed via the sidebar.
 4. To add Users or Customers click the plus button and follow the on screen prompts.
 5. To modify Users or Customers click on the User or Customer you wish to modify, and follow the on screen prompts.
+6. Deleting a user is accomplished via the modification menu by clicking the 'Delete' button, and then confirming via the dialog box.
