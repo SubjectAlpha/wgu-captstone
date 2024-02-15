@@ -28,7 +28,7 @@ export const defaultNavItems: NavItem[] = [
 		icon: <FolderIcon className="w-6 h-6" />,
 	},
 	{
-		label: "Application Settings",
+		label: "Admin Panel",
 		href: "/panel",
 		icon: <CogIcon className="w-6 h-6" />,
 	},
