@@ -17,16 +17,16 @@ export const defaultNavItems: NavItem[] = [
 		href: "/",
 		icon: <HomeIcon className="w-6 h-6" />,
 	},
-	{
-		label: "Customers",
-		href: "/customers",
-		icon: <UserGroupIcon className="w-6 h-6" />,
-	},
-	{
-		label: "Projects",
-		href: "/projects",
-		icon: <FolderIcon className="w-6 h-6" />,
-	},
+	// {
+	// 	label: "Customers",
+	// 	href: "/customers",
+	// 	icon: <UserGroupIcon className="w-6 h-6" />,
+	// },
+	// {
+	// 	label: "Projects",
+	// 	href: "/projects",
+	// 	icon: <FolderIcon className="w-6 h-6" />,
+	// },
 	{
 		label: "Admin Panel",
 		href: "/panel",

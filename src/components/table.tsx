@@ -46,8 +46,8 @@ function Table({
 			  )
 			: defaultHiddenProperties
 	);
-	const [bodyKeys, setBodyKeys] = useState(
-		Object.keys(objectList[0]).filter((o) => !hiddenProperties?.includes(o))
+	const [bodyKeys, setBodyKeys] = useState( objectList.length > 0 ?
+		Object.keys(objectList[0]).filter((o) => !hiddenProperties?.includes(o)) : [""]
 	);
 	const [displayList, setDisplayList] = useState(objectList);
 	const [searchText, setSearchText] = useState("");
@@ -63,10 +63,6 @@ function Table({
 			setHiddenProperties(defaultHiddenProperties);
 		}
 	}, [showDefaults]);
-
-	if (objectList.length < 1) {
-		return <span></span>;
-	}
 
 	const searchFunction: ChangeEventHandler<HTMLInputElement> = (e) => {
 		const val = e.target.value;

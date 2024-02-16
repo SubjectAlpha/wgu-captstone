@@ -37,10 +37,8 @@ export default function AdminPanel(props: Props) {
 					placeholder={undefined}
 					className="w-48 h-48 p-5 text-center m-4"
 				>
-					<Link href="" className="w-full h-full" onClick={() => {
-                        alert("This is not yet implemented")
-                    }}>
-						System Settings
+					<Link href="/panel/customers" className="w-full h-full">
+						Customers
 					</Link>
 				</Card>
 			</div>
