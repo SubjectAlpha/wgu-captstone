@@ -1,0 +1,34 @@
+@startuml ClassExample
+class BaseClass {
+    + CreatedBy : string <<get>> <<set>>
+    + ModifiedBy : string <<get>> <<set>>
+    + IsDeleted : bool <<get>> <<set>>
+}
+class User {
+    + Name : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + Password : string <<get>> <<set>>
+    + Permission : int <<get>> <<set>>
+}
+class Customer {
+    + Company : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + Phone : string <<get>> <<set>>
+}
+class Permission {
+    + Name : string <<get>> <<set>>
+    + PowerLevel : int <<get>> <<set>>
+}
+class SystemSettings {
+    + Name : string <<get>> <<set>>
+    + Value : string <<get>> <<set>>
+    + Enabled : bool <<get>> <<set>>
+}
+BaseClass --> "Id" Guid
+BaseClass --> "CreatedAt" DateTime
+BaseClass --> "ModifiedAt" DateTime
+BaseClass <|-- User
+BaseClass <|-- Customer
+BaseClass <|-- Permission
+BaseClass <|-- SystemSettings
+@enduml
