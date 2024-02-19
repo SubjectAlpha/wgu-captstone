@@ -41,3 +41,7 @@ The cost of hosting the application and database are minimal if hosted on compan
 ## Timeline
 
 The timeline to build this application is approximately two months.
+
+## Validation
+
+In order to validate the application with The Company we are doing a preview test where OpenCMS will front the cost of hosting and managing the site while The Company has their sales reps live test the site to ensure it meets all of their requirements.

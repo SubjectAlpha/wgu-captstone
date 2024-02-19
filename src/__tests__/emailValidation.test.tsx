@@ -2,17 +2,18 @@
  * @jest-environment jsdom
 */
 
+import {expect} from '@jest/globals';
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
 import { describe, it } from 'node:test'
-import Index from '../pages/auth/register'
+import { EmailRegex } from '../utility/regex';
 
-describe('Home', () => {
-  it('renders a heading', () => {
-    render(<Index />)
+describe('ValidatesEmailProperly', () => {
+    it('properly validates an email to RFC 3696', () => {
 
-    const heading = screen.getByRole('heading', { level: 1 })
+        const result1 = EmailRegex.test("thisShouldValidate@email.com");
+        const result2 = EmailRegex.test("thisShouldFail@e.c");
 
-    expect(heading).toBeInTheDocument()
-  })
+        expect(result1).toEqual(true);
+        expect(result2).toEqual(false);
+    })
 })
