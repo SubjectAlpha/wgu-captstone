@@ -7,7 +7,7 @@ import { Users } from "@prisma/client";
 const handler = NextAuth({
     pages: {
         signIn: '/auth/signIn',
-        // error: "/auth/error",
+        error: "/",
         // verifyRequest: '/auth/verify-request', // (used for check email message) implement this with smtp docker img?
     },
     providers: [Credentials({
