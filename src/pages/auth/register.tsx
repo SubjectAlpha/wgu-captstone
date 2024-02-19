@@ -8,6 +8,7 @@ import {
 	PasswordComplexityMessage,
 	PasswordRegex,
 } from "@/opencms/utility/regex";
+import { useRouter } from "next/router";
 import { Card, Typography, Button, Input } from "@material-tailwind/react";
 
 export default function Index() {
@@ -16,6 +17,12 @@ export default function Index() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
+	const router = useRouter();
+	const session = useSession();
+
+	if (session && session.status === "authenticated") {
+		router.push("/");
+	}
 
 	useEffect(() => {
 		if (!EmailRegex.test(email)) {
@@ -158,7 +165,6 @@ export default function Index() {
 						Your Email
 					</Typography>
 					<Input
-                        id="emailInput"
 						placeholder="john.doe@mail.com"
 						className=" !border-t-blue-gray-100 focus:!border-t-gray-900"
 						labelProps={{
@@ -210,7 +216,7 @@ export default function Index() {
 					/>
 				</div>
 				{errorMessage.length > 0 ? (
-					<p id="errorMessage" className="text-red-500 p-2 pt-0">{errorMessage}</p>
+					<p className="text-red-500 p-2 pt-0">{errorMessage}</p>
 				) : (
 					<span />
 				)}
