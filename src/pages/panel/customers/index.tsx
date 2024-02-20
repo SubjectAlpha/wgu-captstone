@@ -161,8 +161,6 @@ const Index = () => {
 		}
 	}
 
-    console.log(data);
-
 	if (data?.customers) {
 		return (
 			<PanelPage

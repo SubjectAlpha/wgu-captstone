@@ -93,8 +93,6 @@ export default async function handler(
 				res.status(400).json({ message: "Invalid email address" });
 			}
 
-            console.log(id, name, email, password, permission);
-
 			if (id === "" || id === undefined || id === null) {
 				if (!PasswordRegex.test(password)) {
 					res.status(400).json({
@@ -105,7 +103,7 @@ export default async function handler(
 				const user = await prisma.users.create({
 					data: {
 						name: name,
-						permission: parseInt(permission) ?? 0,
+						permission: permission,
 						email: email,
 						password: Hash(password),
 					},
@@ -113,14 +111,13 @@ export default async function handler(
 
 				res.status(200).json({ user: user });
 			} else {
-				const p = parseInt(permission) ?? 0;
 				const user = await prisma.users.update({
 					where: {
 						id: id,
 					},
 					data: {
 						name: name,
-						permission: p,
+						permission: permission,
 						email: email,
 					},
 				});

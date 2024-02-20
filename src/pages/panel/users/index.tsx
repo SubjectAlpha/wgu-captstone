@@ -11,7 +11,7 @@ import {
 	Option,
 	Button,
 } from "@material-tailwind/react";
-import { Permissions, Users } from "@prisma/client";
+import { Users } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { randomBytes } from "crypto";
 import { useSession } from "next-auth/react";
@@ -26,7 +26,6 @@ const Index = () => {
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
-    const [searchText, setSearchText] = useState("");
 	const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 	const [selectedUser, setSelectedUser] = useState({} as Users);
 	const session = useSession();
@@ -39,14 +38,6 @@ const Index = () => {
 			return result.users;
 		},
 		refetchInterval: 15 * 1000,
-	});
-
-	const permissionsQuery = useQuery({
-		queryKey: ["findAllPermissions"],
-		queryFn: async () => {
-			let result = await get("/api/permissions/all");
-			return result.permission;
-		},
 	});
 
 	useEffect(() => {
@@ -271,20 +262,8 @@ const Index = () => {
 							onChange={onPermissionChange}
 							value={permission}
 						>
-							{permissionsQuery.data ? (
-								permissionsQuery.data.map((p: Permissions) => {
-									return (
-										<Option
-											key={p.powerLevel}
-											value={p.powerLevel + ""}
-										>
-											{p.name}
-										</Option>
-									);
-								})
-							) : (
-								<Option value="-1">Permission</Option>
-							)}
+							<Option value="user">User</Option>
+                            <Option value="admin">Admin</Option>
 						</Select>
 						{selectedUser.id && (
 							<Button
