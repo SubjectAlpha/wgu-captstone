@@ -28,11 +28,10 @@ const Index = () => {
 	const session = useSession();
 	const router = useRouter();
 
-	const customersQuery = useQuery({
+	const {data} = useQuery({
 		queryKey: ["customersQuery"],
 		queryFn: async () => {
-			let result = await get("/api/customers");
-			return result.customers;
+			return await get("/api/customers");
 		},
 		refetchInterval: 10,
 	});
@@ -158,7 +157,7 @@ const Index = () => {
 		}
 	}
 
-	if (customersQuery.data) {
+	if (data.customers) {
 		return (
 			<PanelPage
 				router={router}
@@ -173,7 +172,7 @@ const Index = () => {
 				)}
 				<Table
 					title="Customers"
-					objectList={customersQuery.data}
+					objectList={data.customers}
 					onAddClick={onAddClick}
 					onRowClick={onRowClick}
 				/>

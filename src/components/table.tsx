@@ -18,8 +18,8 @@ import { ChangeEventHandler, useEffect, useState } from "react";
 interface Props {
 	title: string;
 	objectList: any[];
-	onRowClick: Function;
-	onAddClick: Function;
+	onRowClick: Function | undefined;
+	onAddClick: Function | undefined;
 	showDefaults?: string[];
 }
 
@@ -96,7 +96,7 @@ function Table({
 						{title}
 					</Typography>
 					<div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-						<Button
+						{onAddClick != undefined && <Button
 							className="flex items-center gap-3"
 							size="sm"
 							placeholder={undefined}
@@ -105,7 +105,7 @@ function Table({
 							}}
 						>
 							<PlusIcon strokeWidth={2} className="h-4 w-4" />
-						</Button>
+						</Button>}
 					</div>
 				</div>
 				<div className="flex flex-col items-center md:flex-row">
@@ -156,7 +156,9 @@ function Table({
 									key={o.id + "-row"}
 									className="hover:bg-gray-200"
 									onClick={(e) => {
-										onRowClick(o.id, e);
+                                        if(onRowClick != undefined){
+                                            onRowClick(o.id, e);
+                                        }
 									}}
 								>
 									{bodyKeys.map((x, c) => {
@@ -182,35 +184,6 @@ function Table({
 					</tbody>
 				</table>
 			</CardBody>
-			<CardFooter
-				className="flex items-center justify-between border-t border-blue-gray-50 p-4"
-				placeholder={undefined}
-			>
-				<Typography
-					variant="small"
-					color="blue-gray"
-					className="font-normal"
-					placeholder={null}
-				>
-					Page 1 of 10
-				</Typography>
-				<div className="flex gap-2">
-					<Button
-						variant="outlined"
-						size="sm"
-						placeholder={undefined}
-					>
-						Previous
-					</Button>
-					<Button
-						variant="outlined"
-						size="sm"
-						placeholder={undefined}
-					>
-						Next
-					</Button>
-				</div>
-			</CardFooter>
 		</Card>
 	);
 }
