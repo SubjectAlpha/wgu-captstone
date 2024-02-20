@@ -39,7 +39,6 @@ const PanelPage = ({
             {
                 queryKey: ["findSingleUser"],
                 queryFn: async () => {
-                    console.log("executing bullshit", session.data.user.id);
                     return await get("/api/users/" + session.data.user.id);
                 },
                 refetchInterval: -1,

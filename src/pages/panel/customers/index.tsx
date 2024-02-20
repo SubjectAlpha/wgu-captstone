@@ -2,16 +2,13 @@ import { DialogPopup } from "@/opencms/components/DialogPopup";
 import PanelPage from "@/opencms/components/panel/Page";
 import Table from "@/opencms/components/table";
 import { get, post, remove } from "@/opencms/utility/fetch";
-import { Generate } from "@/opencms/utility/pwd";
 import { EmailRegex } from "@/opencms/utility/regex";
 import {
 	Typography,
 	Input,
-	Select,
-	Option,
 	Button,
 } from "@material-tailwind/react";
-import { Permissions, Customers } from "@prisma/client";
+import { Customers } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -19,9 +16,9 @@ import { ChangeEvent, MouseEventHandler, useEffect, useState } from "react";
 
 const Index = () => {
 	const [id, setId] = useState("");
-	const [name, setName] = useState("");
+	const [company, setCompany] = useState("");
 	const [email, setEmail] = useState("");
-	const [permission, setPermission] = useState("0");
+    const [phone, setPhone] = useState("");
 	const [errorMessage, setErrorMessage] = useState("");
 	const [successMessage, setSuccessMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
@@ -37,15 +34,7 @@ const Index = () => {
 			let result = await get("/api/customers");
 			return result.customers;
 		},
-		refetchInterval: 15 * 1000,
-	});
-
-	const permissionsQuery = useQuery({
-		queryKey: ["findAllPermissions"],
-		queryFn: async () => {
-			let result = await get("/api/permissions/all");
-			return result.permission;
-		},
+		refetchInterval: 10,
 	});
 
 	useEffect(() => {
@@ -56,21 +45,13 @@ const Index = () => {
 		}
 	}, [email]);
 
-    // FIXME:
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
 			id: string;
-			name: string;
+			company: string;
 			email: string;
-			permission?: string;
-			password?: string;
-			confirmPassword?: string;
+			phone?: string;
 		}) => {
-			if (!body.id) {
-				const password = Generate(24);
-				body.password = password;
-				body.confirmPassword = password;
-			}
 			return post("/api/customers", body);
 		},
 		onSuccess: (data) => {
@@ -94,9 +75,9 @@ const Index = () => {
 		onSuccess(data) {
 			if (data.customer) {
 				setId(data.customer.id);
-				setName(data.customer.name);
+				setCompany(data.customer.company);
 				setEmail(data.customer.email);
-				setPermission(data.customer.permission.toString());
+				setPhone(data.customer.phone);
 				setSelectedCustomer(data.customer);
 			}
 		},
@@ -111,11 +92,11 @@ const Index = () => {
 
 	function resetFields() {
 		setId("");
-		setName("");
+		setCompany("");
 		setEmail("");
 		setErrorMessage("");
 		setSuccessMessage("");
-		setPermission("0");
+		setPhone("");
 	}
 
 	function onAddClick(event: MouseEventHandler) {
@@ -131,15 +112,15 @@ const Index = () => {
 	}
 
 	function onNameChange(event: ChangeEvent<HTMLInputElement>) {
-		setName(event.target.value);
+		setCompany(event.target.value);
 	}
 
 	function onEmailChange(event: ChangeEvent<HTMLInputElement>) {
 		setEmail(event.target.value);
 	}
 
-	function onPermissionChange(value: string | undefined) {
-		setPermission(value ?? "0");
+	function onPhoneChange(event: ChangeEvent<HTMLInputElement>) {
+		setPhone(event.target.value);
 	}
 
 	async function registerClick() {
@@ -152,9 +133,9 @@ const Index = () => {
 
 			const result = await registrationMutation.mutateAsync({
 				id,
-				name,
+				company,
 				email,
-				permission,
+				phone,
 			});
 
 			if (result) {
@@ -227,16 +208,16 @@ const Index = () => {
 							color="blue-gray"
 							placeholder={undefined}
 						>
-							{"Customer's Name"}
+							{"Customer's Company Name"}
 						</Typography>
 						<Input
-							placeholder="John Doe"
+							placeholder="Company Inc."
 							className=" !border-t-blue-gray-100 focus:!border-t-gray-900"
 							labelProps={{
 								className:
 									"before:content-none after:content-none",
 							}}
-							value={name}
+							value={company}
 							onChange={onNameChange}
 							crossOrigin={undefined}
 						/>
@@ -246,7 +227,7 @@ const Index = () => {
 							color="blue-gray"
 							placeholder={undefined}
 						>
-							Your Email
+							Customer Email
 						</Typography>
 						<Input
 							placeholder="john.doe@mail.com"
@@ -264,28 +245,19 @@ const Index = () => {
 							color="blue-gray"
 							placeholder={undefined}
 						>
-							Permission Level
+							Contact Phone Number
 						</Typography>
-						<Select
-							placeholder={undefined}
-							onChange={onPermissionChange}
-							value={permission}
-						>
-							{permissionsQuery.data ? (
-								permissionsQuery.data.map((p: Permissions) => {
-									return (
-										<Option
-											key={p.powerLevel}
-											value={p.powerLevel + ""}
-										>
-											{p.name}
-										</Option>
-									);
-								})
-							) : (
-								<Option value="-1">Permission</Option>
-							)}
-						</Select>
+						<Input
+							placeholder="999-999-9999"
+							className=" !border-t-blue-gray-100 focus:!border-t-gray-900"
+							labelProps={{
+								className:
+									"before:content-none after:content-none",
+							}}
+							value={phone}
+							onChange={onPhoneChange}
+							crossOrigin={undefined}
+						/>
 						{selectedCustomer.id && (
 							<Button
 								placeholder={undefined}

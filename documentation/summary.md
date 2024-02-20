@@ -16,7 +16,7 @@ The Docker-ized application is a Customer Management System that allows administ
 
 ## Implementation Plan
 
-The implementation of this application at The Company should be rather straightforward.
+The implementation of this application at The Company should be rather straightforward. We anticipate that implementing this solution at The Company will result in better customer management by the sales team.
 
 Implementation steps:
 
@@ -34,13 +34,27 @@ This application was developed using Next.JS, a React Framework, that handles a 
 
 My development environment varied between a few systems, and I kept all of my progress in sync using Git. I developed this application on Windows, MacOS, and Ubuntu.
 
+There has been no cost during the development process, other than time cost.
+
+This project would have greatly benefited from additional human support. Designing, developing, documenting, and managing the application could have easily been a 6 person job, (2 designers, 2 developers, 1 documenter, and 1 project manager), to reach a release state.
+
 ## Cost
 
 The cost of hosting the application and database are minimal if hosted on company hardware. Utilizing third-party hosting will introduce slightly higher costs, but that level is still reasonable (<$1000/yr), and the creators of Next.JS, Vercel, even offer free hosting for Next.JS applications.
 
 ## Timeline
 
-The timeline to build this application is approximately two months.
+The timeline to build this application is approximately two months. The design phase should take no longer than one week (01-01-2024 - 01-08-2024). The development process will be the longest part, with multiple milestones to hit.
+
+The milestones are (presented in timeline and dependency order):
+
+- Database design and creation (01-06-2024 - 01-08-2024)
+- User account creation (Registration and SignIn) (01-08-2024 - 01-16-2024)
+- Authentication and Authorization (01-16-2024 - 01-23-2024)
+- Customer creation (01-23-2024 - 01-26-2024)
+- Report generation (01-26-2024 - 02-04-2024)
+
+Each task is allotted one developer to complete the milestone. The other developer will then code review and test the feature.
 
 ## Validation
 
