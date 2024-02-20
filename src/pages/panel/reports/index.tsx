@@ -1,12 +1,13 @@
-import { Button, Input } from "@material-tailwind/react";
+import { Button, Input, Select, Option } from "@material-tailwind/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import PanelPage from "@/opencms/components/panel/Page";
 import { useState } from "react";
 import { EmailRegex } from "@/opencms/utility/regex";
 import Table from "@/opencms/components/table";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { get } from "@/opencms/utility/fetch";
+import { Users } from "@prisma/client";
 
 interface Props {}
 
@@ -14,18 +15,28 @@ export default function AdminPanel(props: Props) {
 	const router = useRouter();
 	const session = useSession();
     const [errorMessage, setErrorMessage] = useState("");
-    const [employeeEmail, setEmployeeEmail] = useState("");
     const [reportTitle, setReportTitle] = useState("");
+    const [selectedUser, setSelectedUser] = useState("");
+
+    const [displayTitle, setDisplayTitle] = useState("");
+    const [generationDate, setGenerationDate] = useState("")
+    const [customerCount, setCustomerCount] = useState("")
 
     const { data } = useQuery({
-		queryKey: ["customersQuery"],
-		queryFn: async () => {
-			return await get("/api/customers");
-		},
-		refetchInterval: 10,
-	});
+        queryKey: ["getAllUsers"],
+        queryFn: async () => {
+            return await get("/api/users");
+        }
+    })
 
-    console.log(data);
+    const getCustomersMutation = useMutation({
+		mutationKey: ["customersQuery"],
+		mutationFn: async (creatorId: string) => {
+            const res = await get("/api/customers/reports/" + creatorId);
+            setCustomerCount(res?.customers?.length ?? 0)
+			return res;
+		}
+	});
 
 	return (
 		<PanelPage
@@ -35,17 +46,43 @@ export default function AdminPanel(props: Props) {
 		>
 			<div className="bg-gray-200 p-12">
                 <div className="flex flex-row w-full">
-                    <Input label="Employee Email" value={employeeEmail} crossOrigin={undefined} onChange={(e) => {
-                        if(!EmailRegex.test(e.target.value))
-                        {
-
-                        }
-                        setEmployeeEmail(e.target.value)
-                    }}/>
-                    <Input label="Report Title" value={reportTitle} crossOrigin={undefined} onChange={(e) => {
+                    <Select
+							placeholder={undefined}
+							onChange={(v) => {
+                                setSelectedUser(v ?? "");
+                            }}
+							value={selectedUser}
+						>
+							{data?.users ? (
+								data?.users.map((u: Users) => {
+									return (
+										<Option
+											key={u.id}
+											value={u.id}
+										>
+											{u.name}
+										</Option>
+									);
+								})
+							) : (
+								<Option value="-1">Permission</Option>
+							)}
+						</Select>
+                    <Input className="w-1/2" label="Report Title" value={reportTitle} crossOrigin={undefined} onChange={(e) => {
                         setReportTitle(e.target.value)
                     }} />
-                    <Button placeholder="generate">Generate</Button>
+                    <Button placeholder="generate" onClick={() => {
+                        if(reportTitle.length > 0)
+                        {
+                            setDisplayTitle(reportTitle);
+                            setGenerationDate(new Date().toLocaleString())
+                            setErrorMessage("");
+                            getCustomersMutation.mutate(selectedUser);
+                        } else {
+                            setErrorMessage("You must enter a report title")
+                        }
+
+                    }}>Generate</Button>
                 </div>
                 <div className="flex flex-col h-full mt-4">
                     {errorMessage.length > 0 ? (
@@ -53,16 +90,18 @@ export default function AdminPanel(props: Props) {
                     ) : (
                         <span />
                     )}
-                    <p className="text-black">Report Title: {reportTitle}</p>
-                    <p className="text-black">Customers Created This Month: </p>
-                    <p className="text-black">Generation Date: </p>
+                    <p className="text-black">Report Title: {displayTitle}</p>
+                    <p className="text-black">Customers Created This Month: {customerCount}</p>
+                    <p className="text-black">Generation Date: {generationDate}</p>
+                    <p className="text-black">Viewing clients for: {selectedUser}</p>
 
                     <div className="pt-12">
-                    {data.customers?.length > 0 && <Table
+                    {getCustomersMutation?.data?.customers?.length > 0 && <Table
                         title="Customers"
-                        objectList={data.customers}
+                        objectList={getCustomersMutation?.data?.customers}
                         onAddClick={undefined}
-                        onRowClick={() => {}}
+                        onRowClick={undefined}
+                        showDefaults={["createdAt", "updatedAt"]}
                     />}
 
                     </div>

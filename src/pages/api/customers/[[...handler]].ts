@@ -68,7 +68,7 @@ export default async function handler(
 			const company = body.company;
 			const email = body.email;
             const phone = body.phone;
-
+            const creatorId = body.creatorId;
 
 			if (!EmailRegex.test(email)) {
 				res.status(400).json({ message: "Invalid email address" });
@@ -80,6 +80,8 @@ export default async function handler(
 						company: company,
 						email: email,
 						phone: phone,
+                        createdBy: creatorId,
+                        createdAt: new Date().toISOString()
 					},
 				});
 
@@ -93,12 +95,15 @@ export default async function handler(
 						company: company,
 						phone: phone,
 						email: email,
+                        updatedBy: creatorId,
+                        updatedAt: new Date().toISOString()
 					},
 				});
 
 				res.status(200).json({ customer: customer });
 			}
 		} catch (ex: any) {
+            console.log(ex);
 			res.status(500).json({
 				message: ex,
 			});

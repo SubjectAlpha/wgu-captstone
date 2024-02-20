@@ -49,6 +49,7 @@ const Index = () => {
 			id: string;
 			company: string;
 			email: string;
+            creatorId: string;
 			phone?: string;
 		}) => {
 			return post("/api/customers", body);
@@ -134,6 +135,7 @@ const Index = () => {
 				id,
 				company,
 				email,
+                creatorId: session.data?.user?.id,
 				phone,
 			});
 
@@ -157,7 +159,9 @@ const Index = () => {
 		}
 	}
 
-	if (data.customers) {
+    console.log(data);
+
+	if (data?.customers) {
 		return (
 			<PanelPage
 				router={router}
