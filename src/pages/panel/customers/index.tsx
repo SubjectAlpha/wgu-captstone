@@ -8,7 +8,7 @@ import {
 	Input,
 	Button,
 } from "@material-tailwind/react";
-import { Customers } from "@prisma/client";
+import { Customers, Users } from "@prisma/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -131,11 +131,13 @@ const Index = () => {
 				return;
 			}
 
+            const currentUser = session.data?.user as Users;
+
 			const result = await registrationMutation.mutateAsync({
 				id,
 				company,
 				email,
-                creatorId: session.data?.user?.id,
+                creatorId: currentUser.id,
 				phone,
 			});
 

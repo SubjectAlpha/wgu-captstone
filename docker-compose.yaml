@@ -14,12 +14,12 @@ services:
       - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: example
-  # opencms:
-  #   image: open-crm
-  #   ports:
-  #   - "3000:80"
-  #   environment:
-  #     MYSQL_SERVER: localhost
-  #     MYSQL_USER: youruser
-  #     MYSQL_PASSWORD: yourpassword
-  #     MYSQL_DATABASE: open-crm
+  opencms:
+    image: opencms
+    ports:
+    - "3000:3000"
+    environment:
+      MYSQL_SERVER: localhost
+      MYSQL_USER: youruser
+      MYSQL_PASSWORD: yourpassword
+      MYSQL_DATABASE: open-crm
