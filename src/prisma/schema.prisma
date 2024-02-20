@@ -11,7 +11,7 @@ datasource db {
 }
 
 model SystemSettings {
-    name    String  @unique
+    name    String  @id @unique
     value   String  @default("")
     enabled Boolean @default(false)
 }
