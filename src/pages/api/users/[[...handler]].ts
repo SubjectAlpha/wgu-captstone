@@ -74,7 +74,7 @@ export default async function handler(
 			const name = body.name;
 			const email = body.email;
 			const password = body.password;
-			const permission: string = body.permission;
+			const permission: string = body.permission ?? "0";
 			const confirmPassword = body.confirmPassword;
 
 			if (
@@ -93,7 +93,9 @@ export default async function handler(
 				res.status(400).json({ message: "Invalid email address" });
 			}
 
-			if (id === "") {
+            console.log(id, name, email, password, permission);
+
+			if (id === "" || id === undefined || id === null) {
 				if (!PasswordRegex.test(password)) {
 					res.status(400).json({
 						message: PasswordComplexityMessage,

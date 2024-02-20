@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { Card, Typography, Button, Input } from "@material-tailwind/react";
 
 export default function Index() {
+    const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -50,6 +51,7 @@ export default function Index() {
 
 	const registrationMutation = useMutation({
 		mutationFn: (body: {
+            name: string;
 			email: string;
 			password: string;
 			confirmPassword: string;
@@ -58,6 +60,7 @@ export default function Index() {
 		},
 		onSuccess: (data) => {
 			if (data) {
+                setName("");
 				setEmail("");
 				setPassword("");
 				setConfirmPassword("");
@@ -70,6 +73,10 @@ export default function Index() {
 			setErrorMessage(error.message);
 		},
 	});
+
+    function onNameChange(event: ChangeEvent<HTMLInputElement>) {
+		setName(event.target.value);
+	}
 
 	function onEmailChange(event: ChangeEvent<HTMLInputElement>) {
 		setEmail(event.target.value);
@@ -96,6 +103,7 @@ export default function Index() {
 			}
 			if (password === confirmPassword) {
 				const result = await registrationMutation.mutateAsync({
+                    name,
 					email,
 					password,
 					confirmPassword,
@@ -151,8 +159,8 @@ export default function Index() {
 						labelProps={{
 							className: "before:content-none after:content-none",
 						}}
-						value={email}
-						onChange={onEmailChange}
+						value={name}
+						onChange={onNameChange}
 						crossOrigin={undefined}
 					/>
 
